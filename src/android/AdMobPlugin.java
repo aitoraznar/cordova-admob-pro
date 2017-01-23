@@ -2,6 +2,8 @@ package com.rjfun.cordova.admob;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -74,6 +76,31 @@ public class AdMobPlugin extends GenericAdPlugin {
 
   private HashMap<String, AdMobMediation> mediations = new HashMap<String, AdMobMediation>();
 
+  public static final String md5(final String s) {
+      final String MD5 = "MD5";
+      try {
+          // Create MD5 Hash
+          MessageDigest digest = java.security.MessageDigest
+                  .getInstance(MD5);
+          digest.update(s.getBytes());
+          byte messageDigest[] = digest.digest();
+
+          // Create Hex String
+          StringBuilder hexString = new StringBuilder();
+          for (byte aMessageDigest : messageDigest) {
+              String h = Integer.toHexString(0xFF & aMessageDigest);
+              while (h.length() < 2)
+                  h = "0" + h;
+              hexString.append(h);
+          }
+          return hexString.toString();
+
+      } catch (NoSuchAlgorithmException e) {
+          e.printStackTrace();
+      }
+      return "";
+  }
+
   @Override
   protected void pluginInitialize() {
     super.pluginInitialize();
@@ -129,7 +156,7 @@ public class AdMobPlugin extends GenericAdPlugin {
   @Override
   protected View __createAdView(String adId) {
     // safety check to avoid exception when adId is null or empty
-    if(adId==null || adId.length()==0) adId = TEST_BANNER_ID;
+    if(adId==null || adId.length()==0) adId = "";
 
     // Tip: The format for the DFP ad unit ID is: /networkCode/adUnitName
     // example: "/6253334/dfp_example_ad"
@@ -184,7 +211,7 @@ public class AdMobPlugin extends GenericAdPlugin {
   @Override
   protected void __pauseAdView(View view) {
     if(view == null) return;
-    
+
     if(view instanceof PublisherAdView) {
       PublisherAdView dfpView = (PublisherAdView)view;
       dfpView.pause();
@@ -226,7 +253,7 @@ public class AdMobPlugin extends GenericAdPlugin {
   protected Object __createInterstitial(String adId) {
     interstitialReady = false;
     // safety check to avoid exceptoin in case adId is null or empty
-    if(adId==null || adId.length()==0) adId = TEST_INTERSTITIAL_ID;
+    if(adId==null || adId.length()==0) adId = "";
 
     if(adId.charAt(0) == '/') {
       PublisherInterstitialAd ad = new PublisherInterstitialAd(getActivity());
@@ -263,15 +290,15 @@ protected void __showInterstitial(Object interstitial) {
        if(ad.isLoaded()) {
            ad.show();
         }
-  
+
     }else if(interstitial instanceof InterstitialAd){
         InterstitialAd ad = (InterstitialAd) interstitial;
          if(ad.isLoaded()) {
            ad.show();
         }
     }
-   
-  } 
+
+  }
 
   @Override
   protected void __destroyInterstitial(Object interstitial) {
@@ -286,7 +313,7 @@ protected void __showInterstitial(Object interstitial) {
   @Override
   protected Object __prepareRewardVideoAd(String adId) {
     // safety check to avoid exceptoin in case adId is null or empty
-    if(adId==null || adId.length()==0) adId = TEST_REWARDVIDEO_ID;
+    if(adId==null || adId.length()==0) adId = "";
 
     RewardedVideoAd ad = MobileAds.getRewardedVideoAdInstance(getActivity());
     ad.setRewardedVideoAdListener(new RewardVideoListener());
