@@ -45,8 +45,9 @@
         <source-file src="src/android/PluginAdapterDelegate.java" target-dir="src/com/rjfun/cordova/ext" />
         <source-file src="src/android/CordovaPluginExt.java" target-dir="src/com/rjfun/cordova/ext" />
 
-        <!-- cordova CLI using gradle and it working well -->
-        <framework src="com.google.android.gms:play-services-ads:+" />
+        <!-- For use with Firebase cordova-plugin-fcm -->
+        <framework src="com.google.firebase:firebase-ads:+" />
+
         <!-- but unfortunately, build.phonegap.com, Intel XDK, and some other tools still use ant -->
         <!-- dependency id="cordova-plugin-googleplayservices"/ -->
      </platform>
